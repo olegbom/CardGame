@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using Raylib_cs;
 
 namespace CardGame
 {
@@ -10,6 +10,20 @@ namespace CardGame
 
         static void Main(string[] args)
         {
+            Raylib.InitWindow(1800, 1480, "Hello World");
+            while (!Raylib.WindowShouldClose())
+            {
+                Raylib.BeginDrawing();
+                Raylib.ClearBackground(Color.WHITE);
+
+                Raylib.DrawText("Hello, world!", 12, 12, 40, Color.BLACK);
+                Raylib.DrawCircle(900, 500, 100, Color.BEIGE);
+                Raylib.DrawCircleLines(900, 500, 100, Color.BLACK);
+                Raylib.EndDrawing();
+            }
+
+            Raylib.CloseWindow();
+
             const int numberOfPlayers = 4;
             const int numberOfCards = numberOfPlayers * 7;
           
@@ -48,10 +62,7 @@ namespace CardGame
 
             do
             {
-                foreach (var p in players)
-                {
-                    Console.WriteLine(p);
-                }
+                foreach (var p in players) Console.WriteLine(p);
 
                 foreach (var p in players)
                 {
@@ -59,7 +70,7 @@ namespace CardGame
                     
                     int index = r.Next(p.Cards.Count);
                     Console.WriteLine($"Player {p.Index}: {p.Cards[index]}");
-                    p.Cards.RemoveAt(index);
+                    p.SelectCard(index);
                 }
 
                 foreach (var p in players) p.GiveAwayCards();
@@ -67,75 +78,12 @@ namespace CardGame
 
             } while (players.Any(p => p.Cards.Count > 0));
 
+            foreach (var p in players) p.Scoring();
+            foreach (var p in players) Console.WriteLine(p);
 
 
             Console.WriteLine("Hello World!");
+            Console.ReadKey();
         }
     }
-
-
-    class Player
-    {
-        public int Index { get; init; }
-        public Player LeftNeighbor { get; set; } 
-        public Player RightNeighbor { get; set; }
-        public List<Card> Cards { get; } = new List<Card>();
-
-        public int Score { get; set; }
-
-        private List<Card> _newCards = new List<Card>();
-
-        private void TakeCards(IEnumerable<Card> newCards)
-        {
-            _newCards.AddRange(newCards);
-        }
-
-        public void GiveAwayCards()
-        {
-            LeftNeighbor.TakeCards(Cards.Where(c => c.Direction == TransmissionDirection.Left));
-            RightNeighbor.TakeCards(Cards.Where(c => c.Direction == TransmissionDirection.Right));
-        }
-
-        public void CompleteExchange()
-        {
-            Cards.Clear(); 
-            Cards.AddRange(_newCards);
-            _newCards.Clear();
-
-            if (Cards.Count == 2 && Cards.Count(c => c.Direction == TransmissionDirection.Left) == 1)
-            {
-                Score++;
-                Cards.Clear();
-            }
-        
-        }
-        
-        public override string ToString()
-        {
-            StringBuilder sb = new StringBuilder($"Player {Index} Score {Score} ");
-            sb.AppendJoin(" ", Cards);
-            return sb.ToString();
-        }
-    }
-
-
-    enum TransmissionDirection
-    {
-        Left,
-        Right
-    }
-
-    class Card
-    {
-        public TransmissionDirection Direction { get; init; }
-
-        public int Index { get; init; }
-
-        public override string ToString()
-        {
-            return $"{Direction,-5} {Index,2}";
-        }
-    }
-
-
 }
