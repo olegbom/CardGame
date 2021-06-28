@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Raylib_cs;
 
 namespace CardGame
 {
@@ -10,22 +9,9 @@ namespace CardGame
 
         static void Main(string[] args)
         {
-            Raylib.InitWindow(1800, 1480, "Hello World");
-            while (!Raylib.WindowShouldClose())
-            {
-                Raylib.BeginDrawing();
-                Raylib.ClearBackground(Color.WHITE);
-
-                Raylib.DrawText("Hello, world!", 12, 12, 40, Color.BLACK);
-                Raylib.DrawCircle(900, 500, 100, Color.BEIGE);
-                Raylib.DrawCircleLines(900, 500, 100, Color.BLACK);
-                Raylib.EndDrawing();
-            }
-
-            Raylib.CloseWindow();
 
             const int numberOfPlayers = 4;
-            const int numberOfCards = numberOfPlayers * 7;
+            const int numberOfCards = numberOfPlayers * 10;
           
             List<Card> deck = new List<Card>();
             for (int i = 0; i < numberOfCards; i++)
